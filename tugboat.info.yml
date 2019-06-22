@@ -1,0 +1,6 @@
+name: Tugboat QA API
+type: module
+description: 'Provides the ability to integrate with the Tugboat.qa service.'
+package: Development
+core: 8.x
+configure: tugboat.admin_settings

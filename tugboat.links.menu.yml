@@ -1,0 +1,6 @@
+tugboat.admin_settings:
+  title: 'Tugboat settings'
+  route_name: tugboat.admin_settings
+  description: 'Tugboat settings'
+  parent: system.admin_config_development
+

@@ -1,0 +1,7 @@
+tugboat.admin_settings:
+  path: '/admin/config/tugboat'
+  defaults:
+    _form: '\Drupal\tugboat\Form\TugboatConfigurationForm'
+    _title: 'tugboat configuration screen'
+  requirements:
+    _permission: 'administer site configuration'
