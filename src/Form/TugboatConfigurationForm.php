@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Site\Settings;
 
 /**
- * Defines a form that configures forms module settings.
+ * Defines a Tugboat Configuration.
  */
 class TugboatConfigurationForm extends ConfigFormBase {
 
@@ -34,7 +34,7 @@ class TugboatConfigurationForm extends ConfigFormBase {
     $config = $this->config('tugboat.settings');
     $tugboat_token = Settings::get('tugboat_token');
     $masked_token = '';
-      if ($tugboat_token) {
+    if ($tugboat_token) {
       $masked_token =  substr($tugboat_token, 0, 4) . str_repeat("*", strlen($tugboat_token) - 8) . substr($tugboat_token, -4);
     }
     $form['tugboat_token'] = array(
@@ -83,36 +83,32 @@ class TugboatConfigurationForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
-
-/**
- * Validate handler for tugboat_admin_settings().
- */
-public function validateForm(array &$form, FormStateInterface $form_state) {
-  //$executable_path = $form_state['values']['tugboat_executable_path'];
-  $executable_path = $form_state->getValue('tugboat_executable_path');
-  if (!is_file($executable_path)) {
-    $form_state->setErrorByName('tugboat_executable_path', $this->t('No file found at the provided path.'));
-    return;
-  }
-  elseif (!is_executable($executable_path)) {
-    $form_state->setErrorByName('tugboat_executable_path', $this->t('The Tugboat CLI binary was found, but it is not executable.'));
-    return;
-  }
-  $repo = $form_state->getValue('tugboat_repository_id');
-  //$branch = $form_state['values']['repository_base'];
-  $data = array();
-  $error_string = '';
-  $success = _tugboat_execute("find '$repo'", $data, $error_string, $executable_path);
-  if (!$success) {
-    if ($error_string) {
-      $form_state->setErrorByName('tugboat_repository_id', t('The provided repository ID was not found. Tugboat returned the response: @error', array('@error' =>  $error_string)));
+  /**
+   * Form Validation.
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $executable_path = $form_state->getValue('tugboat_executable_path');
+    if (!is_file($executable_path)) {
+      $form_state->setErrorByName('tugboat_executable_path', $this->t('No file found at the provided path.'));
+      return;
     }
-    else {
-      $form_state->setErrorByName('tugboat_repository_id', t('Tugboat returned a response that was not understood.'));
+    elseif (!is_executable($executable_path)) {
+      $form_state->setErrorByName('tugboat_executable_path', $this->t('The Tugboat CLI binary was found, but it is not executable.'));
+      return;
+    }
+    $repo = $form_state->getValue('tugboat_repository_id');
+    $data = array();
+    $error_string = '';
+    $success = \Drupal::service('tugboat.execute')->_tugboat_execute("find '$repo'", $data, $error_string, $executable_path);
+    if (!$success) {
+      if ($error_string) {
+        $form_state->setErrorByName('tugboat_repository_id', t('The provided repository ID was not found. Tugboat returned the response: @error', array('@error' =>  $error_string)));
+      }
+      else {
+        $form_state->setErrorByName('tugboat_repository_id', t('Tugboat returned a response that was not understood.'));
+      }
     }
   }
-
-}
 
   /**
    * {@inheritdoc}
@@ -133,5 +129,4 @@ public function validateForm(array &$form, FormStateInterface $form_state) {
       ->save();
     parent::submitForm($form, $form_state);
   }
-
 }
