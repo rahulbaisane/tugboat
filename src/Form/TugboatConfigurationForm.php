@@ -83,6 +83,37 @@ class TugboatConfigurationForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+
+/**
+ * Validate handler for tugboat_admin_settings().
+ */
+public function validateForm(array &$form, FormStateInterface $form_state) {
+  //$executable_path = $form_state['values']['tugboat_executable_path'];
+  $executable_path = $form_state->getValue('tugboat_executable_path');
+  if (!is_file($executable_path)) {
+    $form_state->setErrorByName('tugboat_executable_path', $this->t('No file found at the provided path.'));
+    return;
+  }
+  elseif (!is_executable($executable_path)) {
+    $form_state->setErrorByName('tugboat_executable_path', $this->t('The Tugboat CLI binary was found, but it is not executable.'));
+    return;
+  }
+  $repo = $form_state->getValue('tugboat_repository_id');
+  //$branch = $form_state['values']['repository_base'];
+  $data = array();
+  $error_string = '';
+  $success = _tugboat_execute("find '$repo'", $data, $error_string, $executable_path);
+  if (!$success) {
+    if ($error_string) {
+      $form_state->setErrorByName('tugboat_repository_id', t('The provided repository ID was not found. Tugboat returned the response: @error', array('@error' =>  $error_string)));
+    }
+    else {
+      $form_state->setErrorByName('tugboat_repository_id', t('Tugboat returned a response that was not understood.'));
+    }
+  }
+
+}
+
   /**
    * {@inheritdoc}
    */
@@ -102,4 +133,5 @@ class TugboatConfigurationForm extends ConfigFormBase {
       ->save();
     parent::submitForm($form, $form_state);
   }
+
 }
