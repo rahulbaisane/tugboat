@@ -99,7 +99,7 @@ class TugboatConfigurationForm extends ConfigFormBase {
     $repo = $form_state->getValue('tugboat_repository_id');
     $data = array();
     $error_string = '';
-    $success = \Drupal::service('tugboat.execute')->_tugboat_execute("find '$repo'", $data, $error_string, $executable_path);
+    $success = \Drupal::service('tugboat.execute')->execute("find '$repo'", $data, $error_string, $executable_path);
     if (!$success) {
       if ($error_string) {
         $form_state->setErrorByName('tugboat_repository_id', t('The provided repository ID was not found. Tugboat returned the response: @error', array('@error' =>  $error_string)));

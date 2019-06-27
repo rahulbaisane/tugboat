@@ -28,9 +28,9 @@ class TugboatService {
  */
 
   /**
-   * Implements _tugboat_execute().
+   * Implements execute().
    */
-  public function _tugboat_execute($command_string, array &$return_data, &$return_error_string, $executable_path = NULL) {
+  public function execute($command_string, array &$return_data, &$return_error_string, $executable_path = NULL) {
     $config = \Drupal::config('tugboat.settings');
     $api_token = Settings::get('tugboat_token');
 

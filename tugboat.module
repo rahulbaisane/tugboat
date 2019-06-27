@@ -18,7 +18,7 @@ function tugboat_cron() {
     $repo = $config->get('tugboat_repository_id');
     $return_data = array();
     $error_string = '';
-    $success = $tugboat_execute->_tugboat_execute("ls previews repo=$repo", $return_data, $error_string);
+    $success = $tugboat_execute->execute("ls previews repo=$repo", $return_data, $error_string);
     if (!$success) {
       \Drupal::logger('tugboat')->error('Unable to select sandboxes during cron run. Error from tugboat: @error', array('@error' => $error_string));
     }
@@ -30,7 +30,7 @@ function tugboat_cron() {
         $sandbox_id = $sandbox['id'];
         $return_data = array();
         $error_string = '';
-        $success = $tugboat_execute->_tugboat_execute("delete $sandbox_id", $return_data, $error_string);
+        $success = $tugboat_execute->execute("delete $sandbox_id", $return_data, $error_string);
         if (!$success) {
         \Drupal::logger('tugboat')->error('Unable to delete individual sandbox during cron run. Error from tugboat: @error', array('@error' => $error_string));
         }
