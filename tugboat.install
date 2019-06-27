@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Uninstall functions for the Tugboat module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function tugboat_uninstall() {
+  // Clear variables.
+  \Drupal::service('config.factory')->getEditable('tugboat_executable_path')->delete();
+  \Drupal::service('config.factory')->getEditable('tugboat_repository_id')->delete();
+  \Drupal::service('config.factory')->getEditable('tugboat_repository_base')->delete();
+  \Drupal::service('config.factory')->getEditable('tugboat_sandbox_lifetime')->delete();
+}
