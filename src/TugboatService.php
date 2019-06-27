@@ -3,6 +3,10 @@ namespace Drupal\tugboat;
 
 use Drupal\Core\Site\Settings;
 
+/**
+ * Class TugboatService.
+ */
+
 class TugboatService {
   /**
  * Execute a Tugboat CLI command.
